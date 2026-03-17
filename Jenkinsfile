@@ -35,11 +35,14 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    sh '''
-                    . venv/bin/activate
-                    sonar-scanner
-                    '''
+                script {
+                    def scannerHome = tool 'sonar-scanner'
+                    withSonarQubeEnv("${SONARQUBE_ENV}") {
+                        sh """
+                        . venv/bin/activate
+                        ${scannerHome}/bin/sonar-scanner
+                        """
+                    }
                 }
             }
         }
