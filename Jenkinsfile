@@ -38,10 +38,12 @@ pipeline {
                 script {
                     def scannerHome = tool 'sonar-scanner'
                     withSonarQubeEnv("${SONARQUBE_ENV}") {
-                        sh """
-                        . venv/bin/activate
-                        ${scannerHome}/bin/sonar-scanner
-                        """
+                        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                            sh """
+                            . venv/bin/activate
+                            ${scannerHome}/bin/sonar-scanner -Dsonar.login=$SONAR_TOKEN
+                            """
+                        }
                     }
                 }
             }
